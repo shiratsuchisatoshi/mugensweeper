@@ -15,6 +15,7 @@ describe('爆弾マップのテスト', () => {
     // 3: Then
     const mapMacher = directions.map(([x, y]) => ({ x, y }));
     const bomReturn = map.filter(({ bom }) => bom).length;
+    expect(map).toHaveLength(8);
     expect(map.map(({ x, y }) => ({ x, y }))).toEqual(expect.arrayContaining(mapMacher));
     expect(bomReturn).toBe(bomCount);
   });
