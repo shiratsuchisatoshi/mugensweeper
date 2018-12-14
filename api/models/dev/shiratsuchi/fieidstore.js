@@ -14,7 +14,7 @@ module.exports = {
   addBlock(block) {
     return new FieldModel(block).save();
   },
-  addUsers(users) {
-    return new FieldModel(users).save();
+  addUsers(user) {
+    return new FieldModel(user).save();
   },
 };
