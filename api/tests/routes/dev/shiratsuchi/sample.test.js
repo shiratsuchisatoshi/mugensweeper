@@ -1,10 +1,19 @@
 const chai = require('chai');
 const app = require('../../../../routes/app.js');
 const array2Positions = require('./utils/array2Positions.js');
+const { connectDB, disconnectDB, dropDB } = require('../../../../database.js');
+const FieldModel = require('../../../../models/dev/shiratsuchi/fieldModel.js');
+const { initField } = require('../../../../models/dev/shiratsuchi/fieidstore.js');
 
+const propFilter = '-_id -__v';
 const initialBlock = () => ({ x: 0, y: 0 });
 
 describe('前のゲーム情報のリセット処理、および、リクエスト返り値の追加テスト', () => {
+  beforeAll(connectDB);
+  beforeEach(initField);
+  afterEach(dropDB);
+  afterAll(disconnectDB);
+  // AllとかEAchはitの単位をあらわしている
   it('座標をリセットできる。', async () => {
     // 1: Given
     const positions = [{ x: 1, y: 1 }, { x: -1, y: -1 }];
@@ -19,12 +28,19 @@ describe('前のゲーム情報のリセット処理、および、リクエス�
         .send(positions[i]);
       lastBody = body;
     }
+    const beforeDeletefield = await FieldModel.find({}, propFilter).lean();
     const { body } = await chai.request(app).delete('/dev/shiratsuchi/block');
+    const afterDeletefield = await FieldModel.find({}, propFilter).lean();
 
-    // 3: Then
+    // 3: Then:response
     expect(lastBody).toHaveLength(positions.length + 1);
     expect(lastBody).toEqual(expect.arrayContaining([initialBlock(), ...positions]));
     expect(body).toEqual(expect.arrayContaining([initialBlock()]));
+
+    // 3: Then:db
+    expect(beforeDeletefield).toHaveLength(positions.length + 1);
+    expect(beforeDeletefield).toEqual(expect.arrayContaining([initialBlock(), ...positions]));
+    expect(afterDeletefield).toEqual(expect.arrayContaining([initialBlock()]));
   });
 
   it('同じ座標にはpostしても登録されない', async () => {
@@ -44,6 +60,8 @@ describe('前のゲーム情報のリセット処理、および、リクエス�
         .send(positions[i]);
       lastBody = body;
     }
+    const beforeDeletefield = await FieldModel.find({}, propFilter).lean();
+    const afterDeletefield = await FieldModel.find({}, propFilter).lean();
 
     // 3: Then
     // 重複削除
@@ -53,6 +71,11 @@ describe('前のゲーム情報のリセット処理、および、リクエス�
 
     expect(lastBody).toHaveLength(positions2.length + 1);
     expect(lastBody).toEqual(expect.arrayContaining([initialBlock(), ...positions2]));
+
+    // 3: Then:db
+    expect(beforeDeletefield).toHaveLength(positions2.length + 1);
+    expect(beforeDeletefield).toEqual(expect.arrayContaining([initialBlock(), ...positions2]));
+    expect(afterDeletefield).toEqual(expect.arrayContaining([initialBlock()]));
   });
 
   it('周囲の八方向のみ開ける', async () => {
@@ -79,6 +102,8 @@ describe('前のゲーム情報のリセット処理、および、リクエス�
         .send(positions[i]);
       lastBody = body;
     }
+    const beforeDeletefield = await FieldModel.find({}, propFilter).lean();
+    const afterDeletefield = await FieldModel.find({}, propFilter).lean();
 
     // 3: Then
     // 開いている場所の周囲八方向のみ登録
@@ -86,5 +111,10 @@ describe('前のゲーム情報のリセット処理、および、リクエス�
 
     expect(lastBody).toHaveLength(matchers.length + 1);
     expect(lastBody).toEqual(expect.arrayContaining([initialBlock(), ...matchers]));
+
+    // 3: Then:db
+    expect(beforeDeletefield).toHaveLength(matchers.length + 1);
+    expect(beforeDeletefield).toEqual(expect.arrayContaining([initialBlock(), ...matchers]));
+    expect(afterDeletefield).toEqual(expect.arrayContaining([initialBlock()]));
   });
 });

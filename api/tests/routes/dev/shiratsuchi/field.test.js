@@ -1,5 +1,8 @@
 const chai = require('chai');
 const app = require('../../../../routes/app.js');
+const { connectDB, disconnectDB, dropDB } = require('../../../../database.js');
+// const FieldModel = require('../../../../models/dev/shiratsuchi/fieldModel.js');
+const { initField } = require('../../../../models/dev/shiratsuchi/fieidstore.js');
 
 const initialBlock = () => ({
   x: 0,
@@ -7,6 +10,10 @@ const initialBlock = () => ({
 });
 
 describe('field APIについてのテスト', () => {
+  beforeAll(connectDB);
+  beforeEach(initField);
+  afterEach(dropDB);
+  afterAll(disconnectDB);
   it('最初のfield情報を取得する', async () => {
     // Given
 
