@@ -31,7 +31,7 @@ describe('前のゲーム情報のリセット処理、および、リクエス�
     const beforeDeletefield = await FieldModel.find({}, propFilter).lean();
     const { body } = await chai.request(app).delete('/dev/shiratsuchi/block');
     const afterDeletefield = await FieldModel.find({}, propFilter).lean();
-
+console.log(beforeDeletefield)
     // 3: Then:response
     expect(lastBody).toHaveLength(positions.length + 1);
     expect(lastBody).toEqual(expect.arrayContaining([initialBlock(), ...positions]));

@@ -15,5 +15,7 @@ router.use('/eto/block', require('./eto/block.js'));
 router.use('/hiro/field', require('./hiro/field.js'));
 router.use('/shiratsuchi/field', require('./shiratsuchi/field.js'));
 router.use('/shiratsuchi/block', require('./shiratsuchi/block.js'));
+router.use('/v1/user', require('./v1/user.js'));
+router.use('/v1/userIdGenerate/index', require('./v1/userIdGenerate/index.js'));
 
 module.exports = router;

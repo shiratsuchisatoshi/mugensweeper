@@ -13,6 +13,7 @@ module.exports = {
   },
   addBlock(block) {
     return new FieldModel(block).save();
+
   },
   addUsers(user) {
     return new FieldModel(user).save();
