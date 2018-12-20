@@ -28,12 +28,12 @@ describe('DB接続についてのテスト', () => {
   it('userId発行テスト', async () => {
     // Given
     const testjwt = generateToken.generate();
-    const testId = jwt.decode(testjwt).userId;
+    const testId = jwt.decode(testjwt).userID;
     const testName = 'shiratsuchi';
     const testDate = createDate.value;
 
     await addUser({
-      userId: testId,
+      userID: testID,
       userName: testName,
       createDate: testDate
     });
@@ -42,7 +42,7 @@ describe('DB接続についてのテスト', () => {
     const testDB = await getUser();
 
     // Then
-    expect(testDB[0].userId).toEqual(testId);
+    expect(testDB[0].userID).toEqual(testID);
     expect(testDB[0].userName).toEqual(testName);
     expect(testDB[0].createDate).toEqual(testDate);
   });

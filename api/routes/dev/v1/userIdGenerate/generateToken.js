@@ -14,10 +14,10 @@ function genHash() {
 }
 
 exports.generate = function generateToken() {
-  const userId = genHash();
+  const userID = genHash();
   const token = jwt.sign(
     {
-      userId,
+      userID,
     },
     'secret',
     {

@@ -8,7 +8,7 @@ const { addUser,getUser }  = require('../../../../../api/models/v1/userStore.js'
 router.route('/').post(async(req, res) => {
   const arr = {};
   const accessToken = generateToken.generate();
-  const { userId } = jwt.decode(accessToken);
+  const { userID } = jwt.decode(accessToken);
   // ここはreq.body.userNameで取得する想定
   // const { userName } = req.body.userName;
   const  userName  = 'shir＿'
@@ -18,13 +18,13 @@ router.route('/').post(async(req, res) => {
   const reg = /^.{3,7}$/;
 
   if (reg.test(userName) && userName !== null && userName !== undefined) {
-    arr.userId = userId;
+    arr.userID = userID;
     arr.userName = userName;
     arr.createDate = createDate.value;
     await addUser(arr);
 
   } else {
-    arr.userId = null;
+    arr.userID = null;
     arr.userName = null;
     arr.createDate = createDate.value;
     await addUser(arr);
