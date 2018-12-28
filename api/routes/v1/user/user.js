@@ -1,8 +1,9 @@
 const router = require('express').Router();
+const { addUser, getUser } = require('../../../../api/models/v1/userStore.js');
 
 const user = [];
 
-router.route('/').post((req, res) => {
+router.route('/').post(async (req, res) => {
   const { length } = req.body.userName;
   const { userName } = req.body;
 
@@ -29,7 +30,16 @@ router.route('/').post((req, res) => {
   const harfLetter = (value) => !value.match(/[^\x01-\x7E]/) || !value.match(/[^\uFF65-\uFF9F]/); // eslint-disable-line
 
   if (length >= 3 && length <= 7 && harfLetter(userName)) {
+    console.log(userName, userId);
     user.push({ userName, userId });
+    console.log(user);
+    await addUser({ userName, userId });
+
+    // const tmp = getUser();
+    // console.log(userName)
+    await getUser(userName);
+
+    // res.status(200).json(tmp);
     res.status(200).send(user);
   } else {
     res.status(401).send('Error');
